@@ -10,7 +10,7 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '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');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Initialize Express app
 const app = express();
@@ -18,7 +18,7 @@ const port = process.env.PORT || 3000;
 
 // Configure OpenAI
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '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'
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 // Set up middleware
