@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEARNO.ME - Study <%= deck.title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8A84FF;
+            --secondary: #4CAF50;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent: #FF5722;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, rgba(0, 0, 0, 0) 80%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-links a i {
+            margin-right: 8px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            padding-bottom: 50px;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .study-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .study-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .study-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        /* Flashcard Styles */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            margin: 0 auto 40px;
+        }
+        
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: var(--card-bg);
+            overflow: auto;
+        }
+        
+        .flashcard-front {
+            background: linear-gradient(145deg, #232323, #1a1a1a);
+            color: var(--text-primary);
+        }
+        
+        .flashcard-back {
+            background: linear-gradient(145deg, #1a1a1a, #232323);
+            color: var(--text-primary);
+            transform: rotateY(180deg);
+        }
+        
+        .card-content {
+            font-size: 1.5rem;
+            text-align: center;
+            max-height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .card-hint {
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
+        /* Controls */
+        .study-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 20px;
+        }
+        
+        .control-btn {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .control-btn i {
+            margin-right: 8px;
+        }
+        
+        .control-btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(108, 99, 255, 0.2);
+        }
+        
+        .control-btn.prev {
+            background-color: var(--input-bg);
+        }
+        
+        .control-btn.next {
+            background-color: var(--primary);
+        }
+        
+        .control-btn.difficult {
+            background-color: var(--warning);
+        }
+        
+        .control-btn.easy {
+            background-color: var(--success);
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            background-color: var(--input-bg);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+        
+        /* Card Image */
+        .card-image {
+            max-width: 100%;
+            max-height: 150px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        
+        /* Multiple Choice Options */
+        .multiple-choice-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        .multiple-choice-option {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .multiple-choice-option:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .multiple-choice-option.correct {
+            background-color: var(--success);
+        }
+        
+        .multiple-choice-option.incorrect {
+            background-color: var(--error);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .flashcard-container {
+                height: 300px;
+                max-width: 90%;
+            }
+            
+            .card-content {
+                font-size: 1.2rem;
+            }
+            
+            .study-controls {
+                flex-wrap: wrap;
+                gap: 15px;
+                justify-content: center;
+            }
+            
+            .control-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                flex: 1 0 40%;
+                justify-content: center;
+                min-width: 120px;
+            }
+            
+            .study-header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links li {
+                margin-left: 15px;
+            }
+            
+            .nav-links a span {
+                display: none;
+            }
+            
+            .nav-links a i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .flashcard-container {
+                height: 250px;
+                max-width: 100%;
+            }
+            
+            .card-content {
+                font-size: 1rem;
+                padding: 5px;
+            }
+            
+            .study-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .study-header p {
+                font-size: 0.9rem;
+            }
+            
+            .flashcard-front, .flashcard-back {
+                padding: 15px;
+            }
+            
+            .card-hint {
+                font-size: 0.8rem;
+                bottom: 10px;
+            }
+            
+            .control-btn {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+                flex: 1 0 100%;
+            }
+            
+            .progress-text {
+                font-size: 0.9rem;
+            }
+            
+            .navbar {
+                padding: 10px 0;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .main-content {
+                padding-top: 80px;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) {
+            .control-btn:active {
+                background-color: var(--primary);
+                transform: scale(0.95);
+            }
+            
+            .multiple-choice-option:active {
+                background-color: var(--primary);
+                transform: scale(0.98);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/dashboard" class="logo">
+                    <i class="fas fa-brain"></i> LEARNO
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="/upload"><i class="fas fa-upload"></i> Upload</a></li>
+                    <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="study-header">
+                <h1><%= deck.title %></h1>
+                <p>Study Mode - Click on cards to flip them</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <p class="progress-text" id="progress-text">Card 1 of <%= deck.cards.length %></p>
+
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <% if (deck.cards[0] && deck.cards[0].imageUrl) { %>
+                            <img src="<%= deck.cards[0].imageUrl %>" alt="Card image" class="card-image">
+                        <% } %>
+                        <div class="card-content" id="front-content">
+                            <%= deck.cards[0] ? deck.cards[0].front : 'No cards in this deck' %>
+                        </div>
+                        <div class="card-hint">Click to flip</div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="card-content" id="back-content">
+                            <%= deck.cards[0] ? deck.cards[0].back : 'Add cards to start studying' %>
+                        </div>
+                        <div class="card-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="multiple-choice-container" id="multiple-choice-container">
+                <!-- Multiple choice options will be dynamically inserted here -->
+            </div>
+
+            <div class="study-controls">
+                <button class="control-btn prev" id="prev-btn" <%= deck.cards.length <= 1 ? 'disabled' : '' %>>
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="control-btn difficult" id="difficult-btn">
+                    <i class="fas fa-exclamation-circle"></i> Difficult
+                </button>
+                <button class="control-btn easy" id="easy-btn">
+                    <i class="fas fa-check-circle"></i> Easy
+                </button>
+                <button class="control-btn next" id="next-btn" <%= deck.cards.length <= 1 ? 'disabled' : '' %>>
+                    <i class="fas fa-arrow-right"></i> Next
+                </button>
+            </div>
+            
+            <div class="study-controls" style="margin-top: 15px;">
+                <button class="control-btn" id="improve-btn">
+                    <i class="fas fa-magic"></i> Improve Card
+                </button>
+                <button class="control-btn" id="generate-image-btn">
+                    <i class="fas fa-image"></i> Generate Image
+                </button>
+                <button class="control-btn" id="multiple-choice-btn">
+                    <i class="fas fa-list"></i> Multiple Choice
+                </button>
+                <a href="/deck/<%= deck._id %>" class="control-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Deck
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashcard = document.getElementById('flashcard');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const difficultBtn = document.getElementById('difficult-btn');
+            const easyBtn = document.getElementById('easy-btn');
+            const improveBtn = document.getElementById('improve-btn');
+            const generateImageBtn = document.getElementById('generate-image-btn');
+            const multipleChoiceBtn = document.getElementById('multiple-choice-btn');
+            const frontContent = document.getElementById('front-content');
+            const backContent = document.getElementById('back-content');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const multipleChoiceContainer = document.getElementById('multiple-choice-container');
+            
+            const cards = <%- JSON.stringify(deck.cards) %>;
+            let currentCardIndex = 0;
+            let isMultipleChoiceMode = false;
+            
+            // Initialize progress
+            updateProgress();
+            
+            // Flip card on click
+            flashcard.addEventListener('click', function() {
+                if (!isMultipleChoiceMode) {
+                    flashcard.classList.toggle('flipped');
+                }
+            });
+            
+            // Previous card
+            prevBtn.addEventListener('click', function() {
+                if (currentCardIndex > 0) {
+                    currentCardIndex--;
+                    updateCard();
+                    updateProgress();
+                    if (isMultipleChoiceMode) {
+                        generateMultipleChoiceOptions();
+                    }
+                }
+            });
+            
+            // Next card
+            nextBtn.addEventListener('click', function() {
+                if (currentCardIndex < cards.length - 1) {
+                    currentCardIndex++;
+                    updateCard();
+                    updateProgress();
+                    if (isMultipleChoiceMode) {
+                        generateMultipleChoiceOptions();
+                    }
+                }
+            });
+            
+            // Mark as difficult
+            difficultBtn.addEventListener('click', function() {
+                // Here you could implement spaced repetition logic
+                // For now, just visual feedback
+                difficultBtn.classList.add('active');
+                setTimeout(() => difficultBtn.classList.remove('active'), 300);
+                
+                // Move to next card if available
+                if (currentCardIndex < cards.length - 1) {
+                    currentCardIndex++;
+                    updateCard();
+                    updateProgress();
+                    if (isMultipleChoiceMode) {
+                        generateMultipleChoiceOptions();
+                    }
+                }
+            });
+            
+            // Mark as easy
+            easyBtn.addEventListener('click', function() {
+                // Here you could implement spaced repetition logic
+                // For now, just visual feedback
+                easyBtn.classList.add('active');
+                setTimeout(() => easyBtn.classList.remove('active'), 300);
+                
+                // Move to next card if available
+                if (currentCardIndex < cards.length - 1) {
+                    currentCardIndex++;
+                    updateCard();
+                    updateProgress();
+                    if (isMultipleChoiceMode) {
+                        generateMultipleChoiceOptions();
+                    }
+                }
+            });
+            
+            // Improve card
+            improveBtn.addEventListener('click', function() {
+                improveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Improving...';
+                improveBtn.disabled = true;
+                
+                fetch(`/api/improve-card/<%= deck._id %>/${currentCardIndex}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            cards[currentCardIndex] = data.card;
+                            updateCard();
+                            if (isMultipleChoiceMode) {
+                                generateMultipleChoiceOptions();
+                            }
+                            improveBtn.innerHTML = '<i class="fas fa-magic"></i> Improve Card';
+                            improveBtn.disabled = false;
+                        } else {
+                            alert('Failed to improve card: ' + data.error);
+                            improveBtn.innerHTML = '<i class="fas fa-magic"></i> Improve Card';
+                            improveBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while improving the card');
+                        improveBtn.innerHTML = '<i class="fas fa-magic"></i> Improve Card';
+                        improveBtn.disabled = false;
+                    });
+            });
+            
+            // Generate image
+            generateImageBtn.addEventListener('click', function() {
+                generateImageBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                generateImageBtn.disabled = true;
+                
+                fetch(`/api/generate-image/<%= deck._id %>/${currentCardIndex}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            cards[currentCardIndex].imageUrl = data.imageUrl;
+                            updateCard();
+                            generateImageBtn.innerHTML = '<i class="fas fa-image"></i> Generate Image';
+                            generateImageBtn.disabled = false;
+                        } else {
+                            alert('Failed to generate image: ' + data.error);
+                            generateImageBtn.innerHTML = '<i class="fas fa-image"></i> Generate Image';
+                            generateImageBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while generating the image');
+                        generateImageBtn.innerHTML = '<i class="fas fa-image"></i> Generate Image';
+                        generateImageBtn.disabled = false;
+                    });
+            });
+            
+            // Toggle multiple choice mode
+            multipleChoiceBtn.addEventListener('click', function() {
+                isMultipleChoiceMode = !isMultipleChoiceMode;
+                
+                if (isMultipleChoiceMode) {
+                    flashcard.classList.remove('flipped');
+                    multipleChoiceContainer.style.display = 'block';
+                    multipleChoiceBtn.innerHTML = '<i class="fas fa-credit-card"></i> Flashcard Mode';
+                    generateMultipleChoiceOptions();
+                } else {
+                    multipleChoiceContainer.style.display = 'none';
+                    multipleChoiceBtn.innerHTML = '<i class="fas fa-list"></i> Multiple Choice';
+                }
+            });
+            
+            // Generate multiple choice options
+            function generateMultipleChoiceOptions() {
+                // Clear previous options
+                multipleChoiceContainer.innerHTML = '';
+                
+                // Get correct answer
+                const correctAnswer = cards[currentCardIndex].back;
+                
+                // Get 3 random incorrect answers from other cards
+                let incorrectAnswers = [];
+                let availableCards = [...cards].filter((card, index) => index !== currentCardIndex);
+                
+                // If we don't have enough cards, create some dummy options
+                if (availableCards.length < 3) {
+                    for (let i = availableCards.length; i < 3; i++) {
+                        availableCards.push({
+                            back: `Option ${i + 1}`
+                        });
+                    }
+                }
+                
+                // Randomly select 3 cards for incorrect answers
+                for (let i = 0; i < 3; i++) {
+                    const randomIndex = Math.floor(Math.random() * availableCards.length);
+                    incorrectAnswers.push(availableCards[randomIndex].back);
+                    availableCards.splice(randomIndex, 1);
+                }
+                
+                // Combine all answers and shuffle
+                const allAnswers = [correctAnswer, ...incorrectAnswers];
+                shuffleArray(allAnswers);
+                
+                // Create option elements
+                allAnswers.forEach(answer => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'multiple-choice-option';
+                    optionElement.textContent = answer;
+                    
+                    optionElement.addEventListener('click', function() {
+                        // Check if correct
+                        if (answer === correctAnswer) {
+                            optionElement.classList.add('correct');
+                            setTimeout(() => {
+                                if (currentCardIndex < cards.length - 1) {
+                                    currentCardIndex++;
+                                    updateCard();
+                                    updateProgress();
+                                    generateMultipleChoiceOptions();
+                                }
+                            }, 1000);
+                        } else {
+                            optionElement.classList.add('incorrect');
+                            
+                            // Find and highlight correct answer
+                            const options = document.querySelectorAll('.multiple-choice-option');
+                            options.forEach(option => {
+                                if (option.textContent === correctAnswer) {
+                                    option.classList.add('correct');
+                                }
+                            });
+                            
+                            // Disable all options
+                            options.forEach(option => {
+                                option.style.pointerEvents = 'none';
+                            });
+                            
+                            // Move to next card after delay
+                            setTimeout(() => {
+                                if (currentCardIndex < cards.length - 1) {
+                                    currentCardIndex++;
+                                    updateCard();
+                                    updateProgress();
+                                    generateMultipleChoiceOptions();
+                                }
+                            }, 2000);
+                        }
+                    });
+                    
+                    multipleChoiceContainer.appendChild(optionElement);
+                });
+            }
+            
+            // Shuffle array (Fisher-Yates algorithm)
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+            
+            // Update card content
+            function updateCard() {
+                // Reset flip state
+                flashcard.classList.remove('flipped');
+                
+                // Update content
+                frontContent.textContent = cards[currentCardIndex].front;
+                backContent.textContent = cards[currentCardIndex].back;
+                
+                // Update image if available
+                const frontCard = document.querySelector('.flashcard-front');
+                let imgElement = frontCard.querySelector('.card-image');
+                
+                if (cards[currentCardIndex].imageUrl) {
+                    if (imgElement) {
+                        imgElement.src = cards[currentCardIndex].imageUrl;
+                    } else {
+                        imgElement = document.createElement('img');
+                        imgElement.src = cards[currentCardIndex].imageUrl;
+                        imgElement.alt = "Card image";
+                        imgElement.className = "card-image";
+                        frontCard.insertBefore(imgElement, frontContent);
+                    }
+                } else if (imgElement) {
+                    imgElement.remove();
+                }
+                
+                // Update button states
+                prevBtn.disabled = currentCardIndex === 0;
+                nextBtn.disabled = currentCardIndex === cards.length - 1;
+            }
+            
+            // Update progress indicators
+            function updateProgress() {
+                const progress = ((currentCardIndex + 1) / cards.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `Card ${currentCardIndex + 1} of ${cards.length}`;
+            }
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
+                    prevBtn.click();
+                } else if (e.key === 'ArrowRight' && !nextBtn.disabled) {
+                    nextBtn.click();
+                } else if (e.key === ' ' || e.key === 'Enter') {
+                    if (!isMultipleChoiceMode) {
+                        flashcard.click();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

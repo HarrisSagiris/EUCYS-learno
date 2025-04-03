@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LENR.ME - Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4CAF50;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent: #FF5722;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-image: radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, rgba(0, 0, 0, 0) 80%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Registration Form Styles */
+        .register-section {
+            padding: 80px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .register-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            animation: pulse 15s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-header h2 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+        
+        .form-group .icon {
+            position: absolute;
+            right: 15px;
+            top: 45px;
+            color: var(--text-secondary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background-color: #5A52D5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-secondary);
+        }
+        
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            text-align: center;
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .feature i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .feature p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* Token Package Styles */
+        .token-packages {
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .token-packages h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .package-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .package-option {
+            flex: 1;
+            min-width: 120px;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .package-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .package-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .package-option .price {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .package-option .tokens {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .token-info {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(108, 99, 255, 0.1);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .token-info i {
+            color: var(--primary);
+            margin-right: 5px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+            
+            .form-header h2 {
+                font-size: 24px;
+            }
+            
+            .features {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .package-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <i class="fas fa-brain"></i> LENR.ME
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/login">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="register-section">
+        <div class="register-container">
+            <div class="form-header">
+                <h2>Create Your Account</h2>
+                <p>Join LENR.ME and revolutionize your learning experience</p>
+            </div>
+            
+            <% if (typeof error !== 'undefined') { %>
+                <div class="alert alert-danger" style="color: var(--error); margin-bottom: 20px; padding: 10px; background-color: rgba(244, 67, 54, 0.1); border-radius: 6px;">
+                    <%= error %>
+                </div>
+            <% } %>
+            
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                    <i class="fas fa-user icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <i class="fas fa-envelope icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                    <i class="fas fa-lock icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    <i class="fas fa-check-circle icon"></i>
+                </div>
+            <div class="token-packages">
+                <h3>Choose a Token Package</h3>
+                <div class="package-options">
+                    <% for (const amount of tokenPackages) { %>
+                    <div class="package-option" onclick="selectPackage('<%= amount %>')">
+                        <div class="price">€<%= amount %></div>
+                        <div class="tokens">
+                            <% if (amount == 5) { %>
+                                100 Tokens
+                            <% } else if (amount == 10) { %>
+                                220 Tokens
+                            <% } else if (amount == 20) { %>
+                                500 Tokens
+                            <% } else { %>
+                                <%= amount %> Tokens
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <input type="hidden" id="tokenPackage" name="tokenPackage" value="">
+                
+                <div class="token-info">
+                    <i class="fas fa-info-circle"></i> Tokens are used for creating decks, uploading documents, and generating AI-enhanced content. Each deck creation costs tokens based on complexity.
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">Sign Up</button>
+            </form>
+            
+            <div class="login-link">
+                Already have an account? <a href="/login">Log in</a>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <p>Advanced Learning</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <p>Secure Platform</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-sync-alt"></i>
+                    <p>Sync Across Devices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function selectPackage(value) {
+            // Update hidden input
+            document.getElementById('tokenPackage').value = value;
+            
+            // Update UI
+            const options = document.querySelectorAll('.package-option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Find the clicked option and add selected class
+            const selectedOption = document.querySelector(`.package-option[onclick="selectPackage('${value}')"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+        }
+        
+        // Initialize with free package selected
+        document.addEventListener('DOMContentLoaded', function() {
+            selectPackage('none');
+        });
+    </script>
+</body>
+</html>

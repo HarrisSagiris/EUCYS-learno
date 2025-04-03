@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEARNO.ME - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/images/LEARNO.png" type="image/png">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8A84FF;
+            --secondary: #4CAF50;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent: #FF5722;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a22, #0F0F13);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-links a i {
+            margin-right: 8px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .user-profile .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-profile .username {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .user-profile .role {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        /* Token Display */
+        .token-display {
+            display: flex;
+            align-items: center;
+            background-color: rgba(108, 99, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-right: 15px;
+            border: 1px solid rgba(108, 99, 255, 0.3);
+        }
+        
+        .token-display i {
+            color: var(--primary);
+            margin-right: 5px;
+        }
+        
+        .token-count {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* Main Content */
+        main {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: none;
+            outline: none;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* Deck Grid */
+        .deck-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .deck-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .deck-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .deck-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #5a52d5 100%);
+            position: relative;
+        }
+        
+        .deck-card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .deck-card-stats {
+            display: flex;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .deck-card-stat {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .deck-card-stat i {
+            margin-right: 5px;
+        }
+        
+        .deck-card-body {
+            padding: 20px;
+        }
+        
+        .deck-card-description {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .deck-card-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .deck-card-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .deck-card-btn i {
+            margin-right: 5px;
+        }
+        
+        .btn-study {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-study:hover {
+            background-color: #5a52d5;
+        }
+        
+        .btn-edit {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+        }
+        
+        .btn-edit:hover {
+            background-color: #3a3a3a;
+        }
+        
+        .deck-options {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .deck-options:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            margin-bottom: 40px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        
+        .stat-icon.purple {
+            background-color: rgba(108, 99, 255, 0.2);
+            color: var(--primary);
+        }
+        
+        .stat-icon.green {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--secondary);
+        }
+        
+        .stat-icon.orange {
+            background-color: rgba(255, 87, 34, 0.2);
+            color: var(--accent);
+        }
+        
+        .stat-icon.yellow {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning);
+        }
+        
+        .stat-icon.blue {
+            background-color: rgba(33, 150, 243, 0.2);
+            color: #2196F3;
+        }
+        
+        .stat-info h4 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* Recent Activity */
+        .recent-activity {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .view-all:hover {
+            color: #5a52d5;
+        }
+        
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .activity-info {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Public Badge */
+        .public-badge {
+            position: absolute;
+            top: 15px;
+            right: 50px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .public-badge i {
+            margin-right: 4px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-logo i {
+            margin-right: 10px;
+        }
+        
+        .footer-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-left: 20px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 14px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .deck-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 0;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                height: 100vh;
+                background-color: var(--card-bg);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 80px 30px 30px;
+                z-index: 1000;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                font-size: 18px;
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .deck-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            .footer-links li:first-child {
+                margin-left: 0;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dashboard-actions {
+                margin-top: 15px;
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+            
+            .user-profile {
+                margin-right: 50px;
+            }
+            
+            .user-profile .user-info {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .deck-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .token-display {
+                margin-right: 10px;
+                padding: 3px 8px;
+            }
+            
+            .token-count {
+                font-size: 12px;
+            }
+            
+            .dashboard-title {
+                font-size: 24px;
+            }
+            
+            .dashboard-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .deck-card-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .deck-card-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .activity-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .activity-icon {
+                margin-bottom: 10px;
+            }
+            
+            .footer-links {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .footer-links li {
+                margin: 5px;
+            }
+        }
+        
+        /* Mobile Navigation Overlay */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Edit Deck Modal */
+        .edit-deck-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            display: none;
+        }
+
+        .edit-deck-modal.active {
+            display: block;
+        }
+
+        .edit-deck-modal h3 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .edit-deck-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .edit-deck-form input,
+        .edit-deck-form textarea {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .edit-deck-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .edit-deck-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .edit-deck-actions button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--error);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/dashboard" class="logo">
+                    <i class="fas fa-brain"></i> <span class="logo-text">LEARNO.ME</span>
+                </a>
+                <div class="hamburger-menu" id="hamburgerMenu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item active">
+                        <a href="/dashboard" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/library" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            <span>Deck Library</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/settings" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chatbot" class="nav-link">
+                            <i class="fas fa-robot"></i>
+                            <span>Chatbot</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/summarise" class="nav-link">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Summarise</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="user-profile">
+                    <div class="token-display">
+                        <i class="fas fa-coins"></i>
+                        <span class="token-count"><%= user.tokens %> tokens</span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=<%= user.username %>&background=6C63FF&color=fff" alt="Profile">
+                    <div class="user-info">
+                        <span class="username"><%= user.username %></span>
+                        <span class="role">Student</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Edit Deck Modal -->
+    <div class="edit-deck-modal" id="editDeckModal">
+        <h3>Edit Deck</h3>
+        <form class="edit-deck-form" id="editDeckForm">
+            <input type="hidden" id="editDeckId">
+            <input type="text" id="editDeckTitle" placeholder="Deck Title" required>
+            <textarea id="editDeckDescription" placeholder="Deck Description"></textarea>
+            <div class="edit-deck-actions">
+                <button type="button" class="btn-delete" id="deleteDeckBtn">Delete Deck</button>
+                <button type="button" class="btn-cancel" id="cancelEditBtn">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Mobile Navigation Menu -->
+    <div class="nav-overlay" id="navOverlay">
+        <div class="mobile-nav">
+            <div class="mobile-nav-header">
+                <a href="/dashboard" class="logo">
+                    <i class="fas fa-brain"></i> <span class="logo-text">LEARNO.ME</span>
+                </a>
+                <div class="close-menu" id="closeMenu">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <ul class="mobile-nav-links">
+                <li class="mobile-nav-item active">
+                    <a href="/dashboard" class="mobile-nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a href="/library" class="mobile-nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Deck Library</span>
+                    </a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a href="/settings" class="mobile-nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a href="/chatbot" class="mobile-nav-link">
+                        <i class="fas fa-robot"></i>
+                        <span>Chatbot</span>
+                    </a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a href="/summarise" class="mobile-nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Summarise</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="mobile-user-profile">
+                <img src="https://ui-avatars.com/api/?name=<%= user.username %>&background=6C63FF&color=fff" alt="Profile">
+                <div class="mobile-user-info">
+                    <span class="username"><%= user.username %></span>
+                    <span class="token-count"><i class="fas fa-coins"></i> <%= user.tokens %> tokens</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const closeMenu = document.getElementById('closeMenu');
+            const navOverlay = document.getElementById('navOverlay');
+            const editDeckModal = document.getElementById('editDeckModal');
+            const editDeckForm = document.getElementById('editDeckForm');
+            const editDeckId = document.getElementById('editDeckId');
+            const editDeckTitle = document.getElementById('editDeckTitle');
+            const editDeckDescription = document.getElementById('editDeckDescription');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const deleteDeckBtn = document.getElementById('deleteDeckBtn');
+
+            // Edit deck functionality
+            function openEditModal(deckId, title, description) {
+                editDeckId.value = deckId;
+                editDeckTitle.value = title;
+                editDeckDescription.value = description;
+                editDeckModal.classList.add('active');
+                navOverlay.classList.add('active');
+            }
+
+            function closeEditModal() {
+                editDeckModal.classList.remove('active');
+                navOverlay.classList.remove('active');
+                editDeckForm.reset();
+            }
+
+            // Add edit option to deck options menu
+            const menuHTML = `
+                <ul>
+                    <li class="share-deck"><i class="fas fa-share-alt"></i> Share Deck</li>
+                    <li class="edit-deck"><i class="fas fa-edit"></i> Edit Deck</li>
+                    <li class="toggle-visibility"><i class="fas fa-globe"></i> Make Deck Public</li>
+                    <li class="export-deck"><i class="fas fa-file-export"></i> Export to PDF</li>
+                </ul>
+            `;
+
+            // Edit form submission
+            editDeckForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const deckId = editDeckId.value;
+                const title = editDeckTitle.value;
+                const description = editDeckDescription.value;
+
+                try {
+                    const response = await fetch(`/api/deck/${deckId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title, description })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        // Update UI
+                        const deckCard = document.querySelector(`[data-deck-id="${deckId}"]`);
+                        deckCard.querySelector('.deck-card-title').textContent = title;
+                        deckCard.querySelector('.deck-card-description').textContent = description || 'No description provided';
+                        closeEditModal();
+                        alert('Deck updated successfully!');
+                    } else {
+                        alert('Failed to update deck: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error updating deck:', error);
+                    alert('Failed to update deck. Please try again.');
+                }
+            });
+
+            // Delete deck functionality
+            deleteDeckBtn.addEventListener('click', async function() {
+                if (confirm('Are you sure you want to delete this deck? This action cannot be undone.')) {
+                    const deckId = editDeckId.value;
+                    try {
+                        const response = await fetch(`/api/deck/${deckId}`, {
+                            method: 'DELETE'
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                            const deckCard = document.querySelector(`[data-deck-id="${deckId}"]`);
+                            deckCard.remove();
+                            closeEditModal();
+                            alert('Deck deleted successfully!');
+                        } else {
+                            alert('Failed to delete deck: ' + data.error);
+                        }
+                    } catch (error) {
+                        console.error('Error deleting deck:', error);
+                        alert('Failed to delete deck. Please try again.');
+                    }
+                }
+            });
+
+            cancelEditBtn.addEventListener('click', closeEditModal);
+
+            // Only add event listeners on mobile devices
+            if (window.innerWidth <= 768) {
+                hamburgerMenu.addEventListener('click', function() {
+                    navOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                closeMenu.addEventListener('click', function() {
+                    navOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+                
+                const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+                
+                navOverlay.addEventListener('click', function(e) {
+                    if (e.target === navOverlay) {
+                        navOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                        closeEditModal();
+                    }
+                });
+            } else {
+                hamburgerMenu.style.display = 'none';
+            }
+        });
+    </script>
+    
+    <main>
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Welcome back, <%= user.username %>!</h1>
+                <div class="dashboard-actions">
+                    <a href="/upload" class="btn btn-secondary"><i class="fas fa-upload"></i> Create Deck</a>                </div>
+            </div>
+
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4><%= decks.length %></h4>
+                            <p>Total Decks</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4><%= decks.reduce((total, deck) => total + deck.cards.length, 0) %></h4>
+                            <p>Total Cards</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4><%= user.tokens %></h4>
+                            <p>Available Tokens</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>0</h4>
+                            <p>Study Hours</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">Your Flashcard Decks</h2>
+                </div>
+
+                <% if (decks.length === 0) { %>
+                    <div class="empty-state">
+                        <i class="fas fa-layer-group"></i>
+                        <h3>No flashcard decks yet</h3>
+                        <p>Upload a document or create a new deck to get started with your learning journey.</p>
+                        
+                    </div>
+                <% } else { %>
+                    <div class="deck-grid">
+                        <% decks.forEach(deck => { %>
+                            <div class="deck-card" data-deck-id="<%= deck._id %>">
+                                <div class="deck-card-header">
+                                    <h3 class="deck-card-title"><%= deck.title %></h3>
+                                    <div class="deck-card-stats">
+                                        <div class="deck-card-stat">
+                                            <i class="fas fa-clone"></i>
+                                            <span><%= deck.cards.length %> cards</span>
+                                        </div>
+                                        <div class="deck-card-stat">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span><%= new Date(deck.createdAt).toLocaleDateString() %></span>
+                                        </div>
+                                        <div class="deck-card-stat">
+                                            <i class="fas fa-eye"></i>
+                                            <span><%= deck.viewCount || 0 %> views</span>
+                                        </div>
+                                    </div>
+                                    <% if (deck.isPublic) { %>
+                                        <span class="public-badge"><i class="fas fa-globe"></i> Public</span>
+                                    <% } %>
+                                    <div class="deck-options">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </div>
+                                </div>
+                                <div class="deck-card-body">
+                                    <p class="deck-card-description"><%= deck.description || 'No description provided' %></p>
+                                    <div class="deck-card-actions">
+                                        <a href="/deck/<%= deck._id %>/study" class="deck-card-btn btn-study">
+                                            <i class="fas fa-play"></i> Study
+                                        </a>
+                                        <a href="/deck/<%= deck._id %>" class="deck-card-btn btn-edit">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </section>
+
+            <section class="recent-activity">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Activity</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <ul class="activity-list">
+                    <% if (user.tokenTransactions && user.tokenTransactions.length > 0) { %>
+                        <% user.tokenTransactions.slice(0, 5).forEach(transaction => { %>
+                            <li class="activity-item">
+                                <div class="activity-icon" style="background-color: <%= transaction.amount > 0 ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)' %>; color: <%= transaction.amount > 0 ? 'var(--success)' : 'var(--error)' %>;">
+                                    <i class="fas <%= transaction.amount > 0 ? 'fa-plus-circle' : 'fa-minus-circle' %>"></i>
+                                </div>
+                                <div class="activity-info">
+                                    <div class="activity-title"><%= transaction.description %> (<%= transaction.amount > 0 ? '+' : '' %><%= transaction.amount %> tokens)</div>
+                                    <div class="activity-time"><%= new Date(transaction.timestamp).toLocaleString() %></div>
+                                </div>
+                            </li>
+                        <% }); %>
+                    <% } else if (decks.length === 0) { %>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background-color: rgba(108, 99, 255, 0.2); color: var(--primary);">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="activity-info">
+                                <div class="activity-title">No recent activity</div>
+                                <div class="activity-time">Start studying to track your progress</div>
+                            </div>
+                        </li>
+                    <% } else { %>
+                        <% decks.slice(0, 3).forEach(deck => { %>
+                            <li class="activity-item">
+                                <div class="activity-icon" style="background-color: rgba(108, 99, 255, 0.2); color: var(--primary);">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="activity-info">
+                                    <div class="activity-title">Created deck "<%= deck.title %>"</div>
+                                    <div class="activity-time"><%= new Date(deck.createdAt).toLocaleString() %></div>
+                                </div>
+                            </li>
+                        <% }); %>
+                    <% } %>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <a href="/dashboard" class="footer-logo">
+                    <i class="fas fa-brain"></i> LEARNO.ME
+                </a>
+                <ul class="footer-links">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="copyright">
+                &copy; <%= new Date().getFullYear() %> LENR.ME. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Add any JavaScript functionality here
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event for deck options
+            const deckOptions = document.querySelectorAll('.deck-options');
+            deckOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Get the deck card and check if it's public
+                    const deckCard = this.closest('.deck-card');
+                    const deckId = deckCard.dataset.deckId;
+                    const isPublic = deckCard.querySelector('.public-badge') !== null;
+                    
+                    // Create dropdown menu with dynamic text based on public status
+                    const menu = document.createElement('div');
+                    menu.className = 'deck-dropdown-menu';
+                    menu.innerHTML = `
+                        <ul>
+                            <li class="share-deck"><i class="fas fa-share-alt"></i> Share Deck</li>
+                            <li class="toggle-visibility"><i class="fas fa-${isPublic ? 'lock' : 'globe'}"></i> ${isPublic ? 'Make Deck Private' : 'Make Deck Public'}</li>
+                            <li class="export-deck"><i class="fas fa-file-export"></i> Export to PDF</li>
+                        </ul>
+                    `;
+                    
+                    // Make sure menu is properly sized for mobile
+                    menu.style.width = 'min(250px, 80vw)';
+                    menu.style.maxWidth = '100%';
+                    // Position the menu
+                    const rect = this.getBoundingClientRect();
+                    menu.style.position = 'absolute';
+                    menu.style.top = rect.bottom + 'px';
+                    menu.style.left = rect.left + 'px';
+                    menu.style.backgroundColor = 'var(--card-bg)';
+                    menu.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+                    menu.style.borderRadius = '8px';
+                    menu.style.padding = '10px 0';
+                    menu.style.zIndex = '1000';
+                    
+                    // Style the list items
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .deck-dropdown-menu ul {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                        }
+                        .deck-dropdown-menu li {
+                            padding: 8px 15px;
+                            cursor: pointer;
+                            color: var(--text-primary);
+                        }
+                        .deck-dropdown-menu li:hover {
+                            background-color: rgba(108, 99, 255, 0.2);
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    // Add to document
+                    document.body.appendChild(menu);
+                    
+                    // Add event listeners for menu items
+                    menu.querySelector('.share-deck').addEventListener('click', function() {
+                        fetch(`/api/share-deck/${deckId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const shareUrl = `${window.location.origin}/shared-deck/${data.shareId}`;
+                                // Create a temporary input to copy the URL
+                                const tempInput = document.createElement('input');
+                                tempInput.value = shareUrl;
+                                document.body.appendChild(tempInput);
+                                tempInput.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(tempInput);
+                                alert(`Deck shared! URL copied to clipboard: ${shareUrl}`);
+                            } else {
+                                alert(`Error: ${data.error}`);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error sharing deck:', error);
+                            alert('Failed to share deck. Please try again.');
+                        });
+                        document.body.removeChild(menu);
+                    });
+                    
+                    menu.querySelector('.toggle-visibility').addEventListener('click', function() {
+                        const endpoint = isPublic ? `/api/make-private/${deckId}` : `/api/make-public/${deckId}`;
+                        
+                        fetch(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                if (isPublic) {
+                                    alert('Deck is now private and has been removed from the public library.');
+                                    // Remove the public badge
+                                    const badge = deckCard.querySelector('.public-badge');
+                                    if (badge) {
+                                        badge.remove();
+                                    }
+                                } else {
+                                    alert('Deck is now public and will appear in the public library!');
+                                    // Update the UI to show the deck is public
+                                    if (!deckCard.querySelector('.public-badge')) {
+                                        const badge = document.createElement('span');
+                                        badge.className = 'public-badge';
+                                        badge.innerHTML = '<i class="fas fa-globe"></i> Public';
+                                        deckCard.querySelector('.deck-card-header').appendChild(badge);
+                                    }
+                                }
+                            } else {
+                                alert(`Error: ${data.error}`);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error updating deck visibility:', error);
+                            alert('Failed to update deck visibility. Please try again.');
+                        });
+                        document.body.removeChild(menu);
+                    });
+                    
+                    // Close menu when clicking outside
+                    document.addEventListener('click', function closeMenu() {
+                        if (document.body.contains(menu)) {
+                            document.body.removeChild(menu);
+                        }
+                        document.removeEventListener('click', closeMenu);
+                    });
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>

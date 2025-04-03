@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4CAF50;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent: #FF5722;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, rgba(0, 0, 0, 0) 80%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            top: 0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin: 0 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link i {
+            margin-right: 8px;
+        }
+        
+        .nav-link:hover, .nav-item.active .nav-link {
+            color: var(--text-primary);
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .token-display {
+            display: flex;
+            align-items: center;
+            background-color: rgba(108, 99, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-right: 15px;
+        }
+        
+        .token-display i {
+            color: #FFD700;
+            margin-right: 5px;
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .username {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .role {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .calendar-container {
+            max-width: 1200px;
+            margin: 80px auto 20px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .deck-selection {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: rgba(42, 42, 42, 0.5);
+            border-radius: 8px;
+        }
+        
+        .deck-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .deck-item {
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid #444;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .deck-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .deck-item.selected {
+            border-color: var(--primary);
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+        
+        .deck-item label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        .deck-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .schedule-options {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .option-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .option-group select, .option-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+        }
+        
+        .generate-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .generate-btn:hover {
+            background-color: #5a52d5;
+        }
+        
+        .generate-btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        
+        .token-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .token-warning {
+            color: var(--error);
+            font-weight: bold;
+        }
+        
+        #calendar {
+            margin-top: 30px;
+            height: 650px;
+            color: var(--text-primary);
+        }
+        
+        .fc-theme-standard .fc-scrollgrid, 
+        .fc-theme-standard td, 
+        .fc-theme-standard th {
+            border-color: #444;
+        }
+        
+        .fc-theme-standard .fc-scrollgrid {
+            background-color: var(--card-bg);
+        }
+        
+        .fc-day-today {
+            background-color: rgba(108, 99, 255, 0.1) !important;
+        }
+        
+        .fc-event {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .fc-event:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        
+        .fc-event-title {
+            font-weight: bold;
+        }
+        
+        .fc-header-toolbar {
+            padding: 10px;
+            background-color: rgba(42, 42, 42, 0.5);
+            border-radius: 8px;
+            margin-bottom: 15px !important;
+        }
+        
+        .fc-button-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+        
+        .fc-button-primary:hover {
+            background-color: #5a52d5 !important;
+        }
+        
+        .fc-button-active {
+            background-color: #5a52d5 !important;
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.5) !important;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18, 18, 18, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #333;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .event-details {
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #444;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .event-details h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+        
+        .event-details p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .event-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .event-meta-item i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(42, 42, 42, 0.5);
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger-menu {
+                display: block;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+            
+            .deck-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .schedule-options {
+                flex-direction: column;
+            }
+            
+            #calendar {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/dashboard" class="logo">
+                    <i class="fas fa-brain"></i> <span class="logo-text">LEARNO.ME</span>
+                </a>
+                <div class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links">
+                    <li class="nav-item">
+                        <a href="/dashboard" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/library" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            <span>Deck Library</span>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="/schedule" class="nav-link">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/settings" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chatbot" class="nav-link">
+                            <i class="fas fa-robot"></i>
+                            <span>Learno AI</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/summarise" class="nav-link">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Summarise</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="user-profile">
+                    <div class="token-display">
+                        <i class="fas fa-coins"></i>
+                        <span class="token-count"><%= user.tokens %> tokens</span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=<%= user.username %>&background=6C63FF&color=fff" alt="Profile">
+                    <div class="user-info">
+                        <span class="username"><%= user.username %></span>
+                        <span class="role">Student</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1>Study Schedule Planner</h1>
+        
+        <div class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Generating your personalized study schedule...</p>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="deck-selection">
+                <h2>Select Decks for Your Study Schedule</h2>
+                <p>Choose the flashcard decks you want to include in your study schedule.</p>
+                
+                <div class="deck-list">
+                    <% if (decks && decks.length > 0) { %>
+                        <% decks.forEach(deck => { %>
+                            <div class="deck-item">
+                                <label>
+                                    <input type="checkbox" name="selectedDecks" value="<%= deck._id %>">
+                                    <div>
+                                        <h3><%= deck.title %></h3>
+                                        <p><%= deck.cards.length %> cards • <%= deck.type %></p>
+                                    </div>
+                                </label>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>You don't have any decks yet. <a href="/upload">Create a deck</a> to get started.</p>
+                    <% } %>
+                </div>
+                
+                <div class="schedule-options">
+                    <div class="option-group">
+                        <h3>Study Preference</h3>
+                        <select id="studyPreference" class="form-control">
+                            <option value="balanced">Balanced (Default)</option>
+                            <option value="intensive">Intensive</option>
+                            <option value="spaced">Spaced Repetition</option>
+                            <option value="morning">Morning Focus</option>
+                            <option value="evening">Evening Focus</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <h3>Available Hours</h3>
+                        <select id="availableHours" class="form-control">
+                            <option value="flexible">Flexible (Default)</option>
+                            <option value="limited">Limited (1-2 hours/day)</option>
+                            <option value="moderate">Moderate (2-4 hours/day)</option>
+                            <option value="extensive">Extensive (4+ hours/day)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <h3>Schedule Duration</h3>
+                        <select id="scheduleDuration" class="form-control">
+                            <option value="1">1 Week</option>
+                            <option value="2" selected>2 Weeks</option>
+                            <option value="4">1 Month</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="generateSchedule" class="generate-btn" <%= user.tokens < tokenPrices.SCHEDULE_GENERATION ? 'disabled' : '' %>>
+                    <i class="fas fa-calendar-plus"></i> Generate Study Schedule
+                </button>
+                
+                <div class="token-info">
+                    <% if (user.tokens >= tokenPrices.SCHEDULE_GENERATION) { %>
+                        <span>This will cost <%= tokenPrices.SCHEDULE_GENERATION %> tokens. You have <%= user.tokens %> tokens.</span>
+                    <% } else { %>
+                        <span class="token-warning">You need <%= tokenPrices.SCHEDULE_GENERATION %> tokens to generate a schedule. You have <%= user.tokens %> tokens.</span>
+                        <a href="/tokenbuy" class="btn btn-sm btn-primary">Buy Tokens</a>
+                    <% } %>
+                </div>
+            </div>
+            
+            <div id="calendar"></div>
+            
+            <div id="calendar-legend" class="calendar-legend" style="display: none;">
+                <!-- Legend items will be added dynamically -->
+            </div>
+            
+            <div id="eventDetails" class="event-details" style="display: none;">
+                <h3 id="eventTitle"></h3>
+                <div class="event-meta">
+                    <div class="event-meta-item">
+                        <i class="far fa-clock"></i>
+                        <span id="eventTime"></span>
+                    </div>
+                    <div class="event-meta-item">
+                        <i class="fas fa-bullseye"></i>
+                        <span id="eventFocus"></span>
+                    </div>
+                </div>
+                <p id="eventDescription"></p>
+                <div class="event-actions">
+                    <a id="studyDeckLink" href="#" class="btn btn-primary">
+                        <i class="fas fa-book-open"></i> Study This Deck
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-brain"></i> LEARNO.ME
+                </div>
+                <ul class="footer-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/privacy">Privacy</a></li>
+                    <li><a href="/terms">Terms</a></li>
+                </ul>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                <p class="copyright">&copy; 2023 LEARNO.ME. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize calendar with improved options
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                height: 'auto',
+                allDaySlot: false,
+                slotMinTime: '06:00:00',
+                slotMaxTime: '22:00:00',
+                nowIndicator: true,
+                navLinks: true,
+                businessHours: {
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    startTime: '09:00',
+                    endTime: '21:00',
+                },
+                slotDuration: '00:30:00',
+                slotLabelInterval: '01:00',
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                },
+                eventDisplay: 'block',
+                eventClick: function(info) {
+                    showEventDetails(info.event);
+                },
+                eventDidMount: function(info) {
+                    // Add tooltip
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'event-tooltip';
+                    tooltip.innerHTML = `
+                        <strong>${info.event.title}</strong><br>
+                        ${info.event.extendedProps.focus}
+                    `;
+                    
+                    info.el.addEventListener('mouseover', function() {
+                        document.body.appendChild(tooltip);
+                        const rect = info.el.getBoundingClientRect();
+                        tooltip.style.position = 'absolute';
+                        tooltip.style.top = rect.bottom + 'px';
+                        tooltip.style.left = rect.left + 'px';
+                        tooltip.style.zIndex = 1000;
+                        tooltip.style.backgroundColor = 'rgba(30, 30, 30, 0.9)';
+                        tooltip.style.color = '#fff';
+                        tooltip.style.padding = '8px';
+                        tooltip.style.borderRadius = '4px';
+                        tooltip.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+                    });
+                    
+                    info.el.addEventListener('mouseout', function() {
+                        if (document.body.contains(tooltip)) {
+                            document.body.removeChild(tooltip);
+                        }
+                    });
+                }
+            });
+            calendar.render();
+            
+            // Handle deck selection with improved UX
+            const deckItems = document.querySelectorAll('.deck-item');
+            deckItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = this.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    
+                    this.classList.toggle('selected', this.querySelector('input[type="checkbox"]').checked);
+                    
+                    // Update generate button state
+                    updateGenerateButtonState();
+                });
+            });
+            
+            // Function to update generate button state
+            function updateGenerateButtonState() {
+                const selectedDecks = document.querySelectorAll('input[name="selectedDecks"]:checked');
+                const generateBtn = document.getElementById('generateSchedule');
+                
+                if (selectedDecks.length === 0) {
+                    generateBtn.disabled = true;
+                    generateBtn.innerHTML = '<i class="fas fa-calendar-plus"></i> Select at least one deck';
+                } else if (<%= user.tokens < tokenPrices.SCHEDULE_GENERATION %>) {
+                    generateBtn.disabled = true;
+                    generateBtn.innerHTML = '<i class="fas fa-coins"></i> Not enough tokens';
+                } else {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-calendar-plus"></i> Generate Study Schedule';
+                }
+            }
+            
+            // Initial button state
+            updateGenerateButtonState();
+            
+            // Generate schedule button with improved functionality
+            const generateBtn = document.getElementById('generateSchedule');
+            generateBtn.addEventListener('click', function() {
+                const selectedDecks = Array.from(document.querySelectorAll('input[name="selectedDecks"]:checked'))
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedDecks.length === 0) {
+                    alert('Please select at least one deck for your study schedule.');
+                    return;
+                }
+                
+                const studyPreference = document.getElementById('studyPreference').value;
+                const availableHours = document.getElementById('availableHours').value;
+                const scheduleDuration = document.getElementById('scheduleDuration').value;
+                
+                // Show loading overlay with animation
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.transition = 'opacity 0.3s ease';
+                    loadingOverlay.style.opacity = '1';
+                }, 10);
+                
+                // Send request to generate schedule
+                fetch('/generate-schedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        deckIds: selectedDecks,
+                        studyPreference,
+                        availableHours
+                    })
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide loading overlay with animation
+                    loadingOverlay.style.transition = 'opacity 0.3s ease';
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 300);
+                    
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    
+                    // Clear existing events
+                    calendar.removeAllEvents();
+                    
+                    // Add events from the generated schedule
+                    const events = [];
+                    const deckColors = {};
+                    const legendEl = document.getElementById('calendar-legend');
+                    legendEl.innerHTML = '';
+                    legendEl.style.display = 'flex';
+                    
+                    // Process schedule data
+                    Object.keys(data.schedule).forEach(day => {
+                        data.schedule[day].forEach(session => {
+                            const date = getDateForDay(day);
+                            
+                            // Generate or retrieve color for this deck
+                            if (!deckColors[session.deckId]) {
+                                deckColors[session.deckId] = getColorForDeck(session.deckId);
+                            }
+                            
+                            events.push({
+                                title: session.title,
+                                start: `${date}T${session.startTime}`,
+                                end: `${date}T${session.endTime}`,
+                                backgroundColor: deckColors[session.deckId],
+                                borderColor: deckColors[session.deckId],
+                                textColor: '#FFFFFF',
+                                extendedProps: {
+                                    deckId: session.deckId,
+                                    focus: session.focus,
+                                    description: session.description || 'Focus on mastering these concepts through active recall.'
+                                }
+                            });
+                        });
+                    });
+                    
+                    calendar.addEventSource(events);
+                    
+                    // Update token display
+                    document.querySelector('.token-count').textContent = `${data.remainingTokens} tokens`;
+                    document.querySelector('.token-info').innerHTML = 
+                        `<span>You have ${data.remainingTokens} tokens remaining.</span>`;
+                })
+                .catch(error => {
+                    console.error('Error generating schedule:', error);
+                    document.querySelector('.loading-overlay').style.display = 'none';
+                    alert('An error occurred while generating your study schedule. Please try again.');
+                });
+            });
+            
+            // Helper function to show event details
+            function showEventDetails(event) {
+                const eventDetails = document.getElementById('eventDetails');
+                const eventTitle = document.getElementById('eventTitle');
+                const eventTime = document.getElementById('eventTime');
+                const eventFocus = document.getElementById('eventFocus');
+                const studyDeckLink = document.getElementById('studyDeckLink');
+                
+                eventTitle.textContent = event.title;
+                
+                const start = event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const end = event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                eventTime.textContent = `${start} - ${end}`;
+                
+                eventFocus.textContent = `Focus: ${event.extendedProps.focus}`;
+                
+                studyDeckLink.href = `/deck/${event.extendedProps.deckId}/study`;
+                
+                eventDetails.style.display = 'block';
+                
+                // Scroll to event details
+                eventDetails.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Helper function to get date for day of week
+            function getDateForDay(day) {
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const today = new Date();
+                const currentDayIndex = today.getDay();
+                const targetDayIndex = days.indexOf(day);
+                
+                const diff = targetDayIndex - currentDayIndex;
+                const targetDate = new Date(today);
+                targetDate.setDate(today.getDate() + diff + (diff < 0 ? 7 : 0));
+                
+                return targetDate.toISOString().split('T')[0];
+            }
+            
+            // Helper function to get color for deck
+            function getColorForDeck(deckId) {
+                // Generate a consistent color based on the deck ID
+                let hash = 0;
+                for (let i = 0; i < deckId.length; i++) {
+                    hash = deckId.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                
+                const colors = [
+                    '#4285F4', '#EA4335', '#FBBC05', '#34A853', // Google colors
+                    '#3498db', '#e74c3c', '#2ecc71', '#f39c12', // Flat UI colors
+                    '#9b59b6', '#1abc9c', '#d35400', '#c0392b'  // More Flat UI colors
+                ];
+                
+                return colors[Math.abs(hash) % colors.length];
+            }
+            
+            // Handle generate schedule button click
+            document.getElementById('generateSchedule').addEventListener('click', function() {
+                const selectedDecks = Array.from(document.querySelectorAll('input[name="selectedDecks"]:checked'))
+                    .map(checkbox => checkbox.value);
+                
+                const studyPreference = document.getElementById('studyPreference').value;
+                const availableHours = document.getElementById('availableHours').value;
+                
+                if (selectedDecks.length === 0) {
+                    alert('Please select at least one deck');
+                    return;
+                }
+                
+                // Show loading state
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                this.disabled = true;
+                
+                fetch('/generate-schedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        deckIds: selectedDecks,
+                        studyPreference,
+                        availableHours
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update token display
+                        document.getElementById('tokenBalance').textContent = data.remainingTokens;
+                        
+                        // Clear existing events
+                        calendar.removeAllEvents();
+                        
+                        // Add events from schedule
+                        Object.keys(data.schedule).forEach(day => {
+                            const sessions = data.schedule[day];
+                            const dateStr = getDateForDay(day);
+                            
+                            sessions.forEach(session => {
+                                calendar.addEvent({
+                                    title: session.title,
+                                    start: `${dateStr}T${session.startTime}`,
+                                    end: `${dateStr}T${session.endTime}`,
+                                    backgroundColor: getColorForDeck(session.deckId),
+                                    borderColor: getColorForDeck(session.deckId),
+                                    extendedProps: {
+                                        deckId: session.deckId,
+                                        focus: session.focus
+                                    }
+                                });
+                            });
+                        });
+                        
+                        // Show success message
+                        document.getElementById('scheduleSuccess').style.display = 'block';
+                        document.getElementById('scheduleError').style.display = 'none';
+                        
+                        // Scroll to calendar
+                        document.getElementById('calendar').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        // Show error message
+                        document.getElementById('scheduleError').textContent = data.error || 'Failed to generate schedule';
+                        document.getElementById('scheduleError').style.display = 'block';
+                        document.getElementById('scheduleSuccess').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('scheduleError').textContent = 'Network error occurred';
+                    document.getElementById('scheduleError').style.display = 'block';
+                    document.getElementById('scheduleSuccess').style.display = 'none';
+                })
+                .finally(() => {
+                    // Reset button state
+                    this.innerHTML = '<i class="fas fa-calendar-plus"></i> Generate Schedule';
+                    this.disabled = false;
+                });
+            });
+    </script>
+</body>
+</html>

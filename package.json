@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "express-fileupload": "^1.5.1",
+    "mammoth": "^1.9.0",
+    "method-override": "^3.0.0",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1"
+  }
+}

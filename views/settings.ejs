@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - LenrMe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4CAF50;
+            --background: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --error: #FF5252;
+            --success: #4CAF50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .settings-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--input-bg);
+            padding-bottom: 15px;
+        }
+        
+        .settings-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .settings-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+        
+        .settings-nav {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .nav-item:hover:not(.active) {
+            background-color: var(--input-bg);
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .settings-content {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        
+        .settings-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--input-bg);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5A52D5;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background-color: rgba(255, 82, 82, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--input-bg);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .theme-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .theme-option {
+            width: 100px;
+            height: 70px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+        
+        .theme-option.selected {
+            border-color: var(--primary);
+        }
+        
+        .theme-option.dark {
+            background-color: #121212;
+        }
+        
+        .theme-option.light {
+            background-color: #f5f5f5;
+        }
+        
+        .theme-option.blue {
+            background-color: #1a237e;
+        }
+        
+        .theme-name {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .theme-option.light .theme-name {
+            color: #333;
+        }
+        
+        .token-section {
+            margin-top: 20px;
+            padding: 25px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .token-balance {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(108, 99, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .token-icon {
+            font-size: 32px;
+            color: var(--primary);
+            margin-right: 15px;
+            background: rgba(108, 99, 255, 0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .token-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .token-info {
+            margin-left: 10px;
+        }
+        
+        .token-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .token-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .token-actions .btn {
+            flex: 1;
+            padding: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .token-actions .btn i {
+            margin-right: 8px;
+        }
+        
+        .transaction-list {
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .transaction-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .transaction-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .transaction-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .transaction-details {
+            flex: 1;
+        }
+        
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="settings-header">
+            <h1>Account Settings</h1>
+            <p>Manage your account information, security, and preferences</p>
+        </div>
+        
+        <% if (successMessage && successMessage.length > 0) { %>
+            <div class="alert alert-success">
+                <%= successMessage %>
+            </div>
+        <% } %>
+        
+        <% if (errorMessage && errorMessage.length > 0) { %>
+            <div class="alert alert-error">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        
+        <div class="settings-grid">
+            <div class="settings-nav">
+                <div class="nav-item active" data-target="profile">
+                    <i class="fas fa-user"></i> Profile
+                </div>
+                <div class="nav-item" data-target="security">
+                    <i class="fas fa-lock"></i> Security
+                </div>
+                <div class="nav-item" data-target="preferences">
+                    <i class="fas fa-sliders-h"></i> Preferences
+                </div>
+                <div class="nav-item" data-target="tokens">
+                    <i class="fas fa-coins"></i> Tokens
+                </div>
+                <div class="nav-item" onclick="window.location.href='/dashboard'">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </div>
+            </div>
+            
+            <div class="settings-content">
+                <!-- Profile Section -->
+                <div class="settings-section active" id="profile">
+                    <h2 class="section-title">Profile Information</h2>
+                    <form action="/settings/profile" method="POST">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" class="form-control" value="<%= user.username %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control" value="<%= user.email %>" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+                
+                <!-- Security Section -->
+                <div class="settings-section" id="security">
+                    <h2 class="section-title">Security Settings</h2>
+                    <form action="/settings/password" method="POST">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                    </form>
+                </div>
+                
+                <!-- Preferences Section -->
+                <div class="settings-section" id="preferences">
+                    <h2 class="section-title">App Preferences</h2>
+                    <form action="/settings/preferences" method="POST">
+                        <div class="form-group">
+                            <label>Theme</label>
+                            <div class="theme-options">
+                                <div class="theme-option dark <%= user.preferences && user.preferences.theme === 'dark' ? 'selected' : '' %>" data-theme="dark">
+                                    <input type="radio" name="theme" value="dark" <%= user.preferences && user.preferences.theme === 'dark' ? 'checked' : '' %> style="display: none;">
+                                    <div class="theme-name">Dark</div>
+                                </div>
+                                <div class="theme-option light <%= user.preferences && user.preferences.theme === 'light' ? 'selected' : '' %>" data-theme="light">
+                                    <input type="radio" name="theme" value="light" <%= user.preferences && user.preferences.theme === 'light' ? 'checked' : '' %> style="display: none;">
+                                    <div class="theme-name">Light</div>
+                                </div>
+                                <div class="theme-option blue <%= user.preferences && user.preferences.theme === 'blue' ? 'selected' : '' %>" data-theme="blue">
+                                    <input type="radio" name="theme" value="blue" <%= user.preferences && user.preferences.theme === 'blue' ? 'checked' : '' %> style="display: none;">
+                                    <div class="theme-name">Blue</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Notifications</label>
+                            <div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="emailNotifications" <%= user.preferences && user.preferences.emailNotifications ? 'checked' : '' %>>
+                                    <span class="slider"></span>
+                                </label>
+                                <span style="margin-left: 10px;">Receive email notifications about new features and updates</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                    </form>
+                </div>
+                
+                <!-- Tokens Section -->
+                <div class="settings-section" id="tokens">
+                    <h2 class="section-title">Token Management</h2>
+                    <div class="token-section">
+                        <h3>Current Balance</h3>
+                        <div class="token-balance">
+                            <div class="token-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="token-info">
+                                <div class="token-label">Available Tokens</div>
+                                <div class="token-amount"><%= user.tokens || 0 %></div>
+                            </div>
+                        </div>
+                        <p>Tokens are used to generate flashcards and access premium features.</p>
+                        
+                        <div class="token-actions">
+                            <a href="/tokenbuy" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Buy Tokens
+                            </a>
+                            <a href="#" class="btn btn-secondary" onclick="showTransactionHistory()">
+                                <i class="fas fa-history"></i> Transaction History
+                            </a>
+                        </div>
+                        
+                        <div id="transaction-history" style="display: none; margin-top: 20px;">
+                            <h3>Transaction History</h3>
+                            <% if (user.tokenTransactions && user.tokenTransactions.length > 0) { %>
+                                <ul class="transaction-list" style="list-style: none; padding: 0;">
+                                    <% user.tokenTransactions.forEach(transaction => { %>
+                                        <li class="transaction-item">
+                                            <div class="transaction-info">
+                                                <div class="transaction-icon" style="background-color: <%= transaction.amount > 0 ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)' %>; color: <%= transaction.amount > 0 ? 'var(--success)' : 'var(--error)' %>;">
+                                                    <i class="fas <%= transaction.amount > 0 ? 'fa-plus' : 'fa-minus' %>"></i>
+                                                </div>
+                                                <div class="transaction-details">
+                                                    <strong><%= transaction.description %></strong>
+                                                    <div><%= new Date(transaction.timestamp).toLocaleString() %></div>
+                                                </div>
+                                            </div>
+                                            <div class="transaction-amount" style="color: <%= transaction.amount > 0 ? 'var(--success)' : 'var(--error)' %>;">
+                                                <%= transaction.amount > 0 ? '+' : '' %><%= transaction.amount %> tokens
+                                            </div>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            <% } else { %>
+                                <p>No transactions yet.</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                if (!target) return; // Skip for items without data-target
+                
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show target section
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(target).classList.add('active');
+            });
+        });
+        
+        // Theme selection
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const theme = this.getAttribute('data-theme');
+                const radioInput = this.querySelector('input[type="radio"]');
+                
+                // Update selected state
+                document.querySelectorAll('.theme-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                
+                // Check the radio button
+                radioInput.checked = true;
+            });
+        });
+        
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.display = 'none';
+            });
+        }, 5000);
+        
+        // Show/hide transaction history
+        function showTransactionHistory() {
+            const history = document.getElementById('transaction-history');
+            if (history.style.display === 'none') {
+                history.style.display = 'block';
+            } else {
+                history.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
