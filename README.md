@@ -33,9 +33,6 @@ EMAIL_USER=your-email@gmail.com
 EMAIL_PASSWORD=your-app-password
 EMAIL_FROM=Learno <your-email@gmail.com>
 
-# Token Pricing and Other Configurations
-# (Add necessary token pricing and additional configurations)
-```
 
 Βεβαιωθείτε οτι εχετε αλλάξει ολα τα placeholders με τα δικά σας.
 
